@@ -80,16 +80,16 @@ async def chat_endpoint(request: ChatRequest):
     """
 
     try:
-        model = genai.GenerativeModel('gemini-pro')
-        
-        # Build History
-        history = [{"role": "user", "parts": [SYSTEM_INSTRUCTION]}]
-        for msg in request.messages:
-            role = "model" if msg.role == "assistant" else "user"
-            history.append({"role": role, "parts": [msg.content]})
+    # Sabse latest aur fast model
+    model = genai.GenerativeModel('gemini-1.5-flash') 
+    
+    history = [{"role": "user", "parts": [SYSTEM_INSTRUCTION]}]
+    for msg in request.messages:
+        role = "model" if msg.role == "assistant" else "user"
+        history.append({"role": role, "parts": [msg.content]})
 
-        response = model.generate_content(history)
-        return {"reply": response.text}
+    response = model.generate_content(history)
+    return {"reply": response.text}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
