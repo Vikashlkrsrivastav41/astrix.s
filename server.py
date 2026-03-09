@@ -80,7 +80,7 @@ async def chat_endpoint(request: ChatRequest):
     """
 
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-pro')
         
         # Build History
         history = [{"role": "user", "parts": [SYSTEM_INSTRUCTION]}]
