@@ -74,41 +74,30 @@ async def chat_endpoint(request: ChatRequest):
     1. NO BS / EXTREMELY DIRECT: Keep normal conversations to 1-3 sentences.
     2. SMART DATA USE: Use the following live internet data if available: {live_context}
     3. BEAUTIFUL FORMATTING: Use Markdown tables and clean formatting.
-    4. DATA SCIENCE & LABELING EXPERT: If the user asks for code, provide ONLY the pure Python code first. Then explain it step-by-step.
+    4. DATA SCIENCE & LABELING EXPERT: If the user asks for code (like data cleaning, data labeling, data analysis, image charts), provide ONLY the pure Python code first. Then, explain what the code does, and tell them exactly how to execute it step-by-step. Act as the core intelligence for ASTRIX-S software.
     5. MIT PROFESSOR TONE: Explain logically and simply.
     """
 
-    formatted_history = []
-    for i, msg in enumerate(request.messages):
-        role = "model" if msg.role == "assistant" else "user"
-        content = msg.content
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
-        if i == len(request.messages) - 1 and role == "user":
-            content = f"{SYSTEM_PROMPT}\n\nUser Question: {content}"
-            
-        formatted_history.append({"role": role, "parts": [content]})
+        # --- THE BULLETPROOF HISTORY TRICK ---
+        # Isse sequence error kabhi nahi aayega!
+        formatted_history = [
+            {"role": "user", "parts": [SYSTEM_PROMPT]},
+            {"role": "model", "parts": ["Understood. I am XONEXA-AGI. How can I assist you today?"]}
+        ]
         
-    # --- THE MAGIC LOOP: Yeh Google ke nakhre khatam kar dega ---
-    models_to_try = [
-        'gemini-1.5-flash-latest', 
-        'gemini-1.5-flash', 
-        'gemini-1.0-pro-latest',
-        'gemini-1.0-pro',
-        'gemini-pro'
-    ]
-    
-    last_error_message = ""
-    for model_name in models_to_try:
-        try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(formatted_history)
-            return {"reply": response.text} # Jaise hi koi ek chalega, yahi se reply de dega
-        except Exception as e:
-            last_error_message = str(e)
-            continue # Agar fail hua, toh agla model try karega
+        for msg in request.messages:
+            role = "model" if msg.role == "assistant" else "user"
+            formatted_history.append({"role": role, "parts": [msg.content]})
             
-    # Agar sab fail ho gaye (jo ki namumkin hai)
-    raise HTTPException(status_code=500, detail=f"Google API Error: {last_error_message}")
+        response = model.generate_content(formatted_history)
+        return {"reply": response.text}
+        
+    except Exception as e:
+        # Agar koi error aata hai, toh ab wahi dikhega, 404 faltu ka nahi!
+        raise HTTPException(status_code=500, detail=f"REAL ERROR: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
