@@ -94,7 +94,7 @@ async def chat_endpoint(request: ChatRequest):
             
         # Sabse advanced aur stable model (gemini-2.0-flash)
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-1.5-flash',
             contents=formatted_contents,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
