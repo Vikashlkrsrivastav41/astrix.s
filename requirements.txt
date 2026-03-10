@@ -1,9 +1,5 @@
+google-genai
 fastapi
 uvicorn
 pydantic
-
-groq
-
-google-generativeai>=0.8.0
 duckduckgo-search
-
