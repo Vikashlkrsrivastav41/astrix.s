@@ -73,7 +73,7 @@ async def chat_endpoint(request: ChatRequest):
 
     # XONEXA-AGI MASTER RULES
     SYSTEM_PROMPT = f"""
-    You are XONEXA-AGI, an elite Data Intelligence AI by ASTRIX-S (Founder: Vikash Kumar).
+    You are XONEXA-AI, an elite Data Intelligence AI by ASTRIX-S (Founder: Vikash Kumar).
     Date: {current_date}
     
     CORE RULES:
